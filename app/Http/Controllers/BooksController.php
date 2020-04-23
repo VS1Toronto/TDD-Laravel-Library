@@ -14,7 +14,14 @@ class BooksController extends Controller
         //
         $data = $this->validateRequest();
 
-        Book::create($data);
+        //  The instance returned back from the create method is saved to variable
+        //  $book here so that it can be used to redirect in the final step of this method
+        //
+        $book = Book::create($data);
+
+        //  Using the path() method in the Book Model for redirect
+        //
+        return redirect($book->path());
         //----------------------------------------------------------------------------------------------
     }
 
@@ -27,13 +34,22 @@ class BooksController extends Controller
         $data = $this->validateRequest();
 
         $book->update($data);
+
+        //  Using the path() method in the Book Model for redirect
+        //
+        return redirect($book->path());
         //----------------------------------------------------------------------------------------------                
     }
 
 
-    /**
-     * @return mixed
-     */
+    public function destroy(Book $book)
+    {
+        $book->delete();
+
+        return redirect('/books');
+    }
+
+
     protected function validateRequest()
     {
         //----------------------------------------------------------------------------------------------

@@ -2,9 +2,10 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Book extends Model
+class Author extends Model
 {
     //--------------------------------------------------------------------------------------------------------------------------------------------
     //  MASS ASSIGNMENT
@@ -13,7 +14,7 @@ class Book extends Model
     //
     //  *** WARNING ***     This turns off the Mass Assignment protection Laravel ships with
     //
-    //  This allows you to mass assign data in BooksController store() method
+    //  This allows you to mass assign data in AuthorsController store() method
     //  An empty array means nothing is guarded
     //
     protected $guarded = [];
@@ -21,11 +22,18 @@ class Book extends Model
 
 
     //--------------------------------------------------------------------------------------------------------------------------------------------
-    //  RETURN PATH FOR THIS MODEL
+    //  REQUIRED FOR dob to have valid date / time format for database
     //
-    public function path()
+    protected $dates = ['dob'];
+    //--------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------
+    //  This is mutating the 'dob' attribute to the correct format for the database
+    //
+    public function setDobAttribute($dob)
     {
-        return '/books/' . $this->id;
+        $this->attributes['dob'] = Carbon::parse($dob);
     }
     //--------------------------------------------------------------------------------------------------------------------------------------------
 

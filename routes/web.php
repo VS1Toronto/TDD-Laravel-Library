@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Route;
 //--------------------------------------------------------------------------------------------------------
 //  ROUTES
 //
-//  Route being used for testing
+
+
+//--------------------------------------------------------------------------------
+//  BOOK Routes being used for testing
 //
 Route::post('/books', 'BooksController@store');
 
@@ -25,4 +28,23 @@ Route::post('/books', 'BooksController@store');
 //  the model binding in the BooksController
 //
 Route::patch('/books/{book}', 'BooksController@update');
+
+Route::delete('/books/{book}', 'BooksController@destroy');
+
+//  END BOOK ROUTES
+//--------------------------------------------------------------------------------
+
+
+
+//--------------------------------------------------------------------------------
+//  AUTHOR Routes being used for testing
+//
+Route::post('author', 'AuthorsController@store');
+
+//  END AUTHOR ROUTES
+//--------------------------------------------------------------------------------
+
+
+//
+//  END ROUTES
 //--------------------------------------------------------------------------------------------------------
