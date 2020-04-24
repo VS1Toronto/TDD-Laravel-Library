@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Author;
 use App\Book;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-
 
 class BookManagementTest extends TestCase
 {
@@ -32,10 +32,9 @@ class BookManagementTest extends TestCase
         //
         $this->withoutExceptionHandling();
 
-        $response = $this->post('/books', [
-            'title' => 'A Cool Title',
-            'author' => 'Victor',
-        ]);
+        //  Using private method data() for valid data
+        //
+        $response = $this->post('/books', $this->data());
 
         //  Fetch the first book created for test
         //
@@ -87,12 +86,12 @@ class BookManagementTest extends TestCase
         //
         //  $this->withoutExceptionHandling();
 
-        $response = $this->post('/books', [
-            'title' => 'A Cool Title',
-            'author' => '',
-        ]);
-
-        $response->assertSessionHasErrors('author');
+        //  Alteration in code utilizing array_merge() precidence characteristics to
+        //  get around difficulty of changing author column to author_id column in database
+        //
+        $response = $this->post('/books', array_merge($this->data(), ['author_id' => '']));
+        
+        $response->assertSessionHasErrors('author_id');
     }
     //----------------------------------------------------------------------------------------------
 
@@ -108,10 +107,9 @@ class BookManagementTest extends TestCase
         //
         $this->withoutExceptionHandling();
 
-        $this->post('/books', [
-            'title' => 'A Cool Title',
-            'author' => 'Victor',
-        ]);
+        //  Using private method data() for valid data
+        //
+        $response = $this->post('/books', $this->data());
 
         //  Fetch the first book created for test
         //
@@ -121,11 +119,15 @@ class BookManagementTest extends TestCase
         //
         $response = $this->patch($book->path(), [
             'title' => 'New Title',
-            'author' => 'New Author',
+            'author_id' => 'New Author',
         ]);
 
         $this->assertEquals('New Title', Book::first()->title);
-        $this->assertEquals('New Author', Book::first()->author);        
+
+        //  3 used here because of the how many times the end point is hit in
+        //  this test which creates multiple author_id examples as the test proceeds
+        //
+        $this->assertEquals(3, Book::first()->author_id);        
     
         //  Once a single  record has been updated redirect to
         //  details page or in other words the show view of that method
@@ -150,10 +152,9 @@ class BookManagementTest extends TestCase
         //
         $this->withoutExceptionHandling();
 
-        $this->post('/books', [
-            'title' => 'A Cool Title',
-            'author' => 'Victor',
-        ]);
+        //  Using private method data() for valid data
+        //
+        $response = $this->post('/books', $this->data());
 
         //------------------------------------------------------------------------------------------
         //  Fetch the first book created for test
@@ -177,6 +178,51 @@ class BookManagementTest extends TestCase
         //  Redirect to index method of books
         //
         $response->assertRedirect('/books');
+    }
+    //----------------------------------------------------------------------------------------------
+
+
+    //----------------------------------------------------------------------------------------------
+    //  TEST 6 - Ensure if a book is added a new Author is automatically added with it
+    // 
+
+    /** @test */
+    public function if_a_book_is_added_an_author_is_added_automatically_with_it()
+    {
+        //  Turn off exception handling so errors can be read
+        //
+        $this->withoutExceptionHandling();
+
+        $this->post('/books', [
+            'title' => 'A Cool Title',
+            'author_id' => 'Victor',
+        ]);
+
+        //------------------------------------------------------------------------------------------
+        //  Fetch the first book created for test
+        //
+        $book = Book::first();
+        $author = Author::first();
+
+        $this->assertEquals($author->id, $book->author_id);
+
+        //  As this database example is created for this test then an
+        //  Author should also be created so a count of 1 is to be expected
+        //
+        $this->assertCount(1, Author::all());
+    }
+    //----------------------------------------------------------------------------------------------
+
+
+    //----------------------------------------------------------------------------------------------
+    //  PRIVATE METHOD RETURNING ARRAY OF VALID DATA FOR TESTS
+    //
+    private function data()
+    {
+        return [
+            'title' => 'Cool Book Title',
+            'author_id' => 'Victor',
+        ];
     }
     //----------------------------------------------------------------------------------------------
 
