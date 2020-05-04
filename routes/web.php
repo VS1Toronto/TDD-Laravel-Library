@@ -45,6 +45,23 @@ Route::post('author', 'AuthorsController@store');
 //--------------------------------------------------------------------------------
 
 
+
+//--------------------------------------------------------------------------------
+//  CHECKOUT Routes being used for testing
+//
+//  FEATURE TEST BookCheckoutTest.php TEST 1 uses this Route
+//
+Route::post('/checkout/{book}', 'CheckoutBookController@store');
+Route::post('/checkin/{book}', 'CheckinBookController@store');
+
+//  END CHECKOUT ROUTES
+//--------------------------------------------------------------------------------
+
+
 //
 //  END ROUTES
 //--------------------------------------------------------------------------------------------------------
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
