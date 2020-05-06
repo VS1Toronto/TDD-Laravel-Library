@@ -39,7 +39,8 @@ Route::delete('/books/{book}', 'BooksController@destroy');
 //--------------------------------------------------------------------------------
 //  AUTHOR Routes being used for testing
 //
-Route::post('authors', 'AuthorsController@store');
+Route::get('/authors/create', 'AuthorsController@create');
+Route::post('/authors', 'AuthorsController@store');
 
 //  END AUTHOR ROUTES
 //--------------------------------------------------------------------------------
